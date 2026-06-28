@@ -1,6 +1,9 @@
 from django.shortcuts import render
-
-from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
+import json
+from basicapis.models import Student
+from django.http import HttpRequest, JsonResponse, HttpResponse, HttpResponseBadRequest
+from icecream import ic
+from django.views.decorators.csrf import csrf_exempt
 
 
 def bad_response(request: HttpRequest):
@@ -8,13 +11,10 @@ def bad_response(request: HttpRequest):
 
 
 def test_page(request: HttpRequest):
-    list_people = [
-        {"name": "harshit", "age": 21},
-        {"name": "Tiwari", "age": 2},
-        {"name": "Samosa", "age": 22},
-        {"name": "billa", "age": 21},
-    ]
-
+    list_people = list(
+        {"name": student.Name, "age": student.Age} for student in Student.objects.all()
+    )
+    ic(list_people)
     veges = ["cucumber", "potato", "tomato", "broccoli"]
     return render(
         request,
@@ -28,4 +28,17 @@ def home_page(request):
     return render(request=request, template_name="home.html")
 
 
-# Create your views here.
+# @csrf_exempt
+def create_student(request: HttpRequest):
+    if request.method == "POST":
+        # Name = request.POST.get("name")
+        # Age = request.POST.get("age")
+        data: dict = json.loads(request.body)
+        Name = data.get("Name")
+        Age = data.get("Age")
+        ic(Name)
+        ic(Age)
+        Student.objects.create(Name=Name, Age=Age)
+        return JsonResponse({"status": 200, "response": "ok"})
+    else:
+        return JsonResponse({"status": 400, "response": "api failed"})

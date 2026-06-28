@@ -1,2 +1,46 @@
-{% extends "base.html" %} {% block main_body%} {% if "a" not in name %} not my
-name {% else %} my name {% endif %} {% endblock main_body %}
+{% extends "base.html" %} {% block main_body%}
+
+<h1>Create New Student</h1>
+{% if "a" not in name %} not my
+name {% else %}
+
+
+my name {% endif %}
+{% csrf_token %}
+<input type="text" id="Name" border="1px">
+
+<input type="text" id="Age">
+
+<button id="submit-button">Submit</button>
+<script>
+
+    document.getElementById("submit-button").onclick = async () => {
+        const name = document.getElementById("Name").value;
+        const csrf_token_value = document.querySelector("[name=csrfmiddlewaretoken]").value;
+        const age = document.getElementById("Age").value;
+        if (name.trim() !== "" && age.trim() !== "") {
+            response = await fetch("{% url 'create_student' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrf_token_value
+                },
+                body: JSON.stringify({
+                    Name: name,
+                    Age: age
+                })
+
+            });
+
+            response = await response.json();
+            console.log(response);
+        }
+        else {
+            document.getElementById("Name").value = "Please set some value ";
+            document.getElementById("Age").value = "please set some value";
+        }
+    }
+
+</script>
+
+{% endblock main_body %}
