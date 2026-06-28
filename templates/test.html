@@ -1,18 +1,2 @@
-{% load static %}
-
-<link rel="stylesheet" href="{% static 'test-file.css' %}" />
-<h1 class="test-h1">This is a simple html page from the html file</h1>
-
-<script>
-
-async function  test_server(){
-
-        let a = await fetch('http://127.0.0.1:8000/');
-        a= await  a.json();
-        console.log(a)
-
-}
-
-test_server()
-    
-</script>
+{% extends "base.html" %} {% block main_body%} {% if "a" not in name %} not my
+name {% else %} my name {% endif %} {% endblock main_body %}

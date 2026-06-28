@@ -7,5 +7,6 @@ from . import views
 urlpatterns = [
     path("", lambda x: JsonResponse({"rabdi": f"{x}"})),
     path("bad_response/", views.bad_response),
-    path("page/", views.page),
+    path("test_page/", views.test_page),
+    path("home_page/", views.home_page),
 ]
